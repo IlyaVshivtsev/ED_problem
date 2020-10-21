@@ -8,9 +8,9 @@ from matplotlib import pyplot as plt
 # initial values
 # --------------------------------------------------------------------------------
 EH	= 1.0 # commom amplitude
-E 	= np.array([0,EH,0])	# electric field
-H 	= np.array([0,0,EH])	# magnetic field
-field = ElectroMagneticField(E, H, is_hom=True, is_con=True) # homogeneous constant field
+E 	= np.array([0,EH,0]) # electric field
+H 	= np.array([0,0,EH]) # magnetic field
+field = ElectroMagneticField(E, H) # homogeneous constant field
 
 x0 	= np.array([0,0,0])	# initial coordinate
 p0 	= np.array([0,0,0])	# initial momentum
@@ -34,12 +34,12 @@ x3_exact_data = p2_data * p0[2]/(EH*alpha)
 
 # numerical solution
 # ---------------------------------------------------------------------------------
-xp_init	= np.hstack((x0, p0))
-xp_data	= odeint(calc_der, xp_init, time_data, args=(field,))	# solves equation
+particle = Particle(x0, p0)
+x_data, p_data = particle.motion(field, time_data)
 
-x1_data = xp_data[:,0]	# x-component
-x2_data = xp_data[:,1]	# y-component
-x3_data = xp_data[:,2]	# z-component
+x1_data = x_data[:,0] # x-component
+x2_data = x_data[:,1] # y-component
+x3_data = x_data[:,2] # z-component
 #----------------------------------------------------------------------------------
 
 

@@ -1,12 +1,13 @@
 # electro_magnetic.py
 
 import numpy as np
+from scipy.integrate import odeint
 
 class ElectroMagneticField():
 	'''
 	Electro-Magnetic field
 	'''
-	def __init__(self, E, H, is_hom=False, is_con=False):
+	def __init__(self, E, H, is_hom=True, is_con=True):
 		'''
 		Constructor
 		'''
@@ -40,6 +41,33 @@ class ElectroMagneticField():
 			return self._H(x)
 		else:
 			return self._H(t,x)
+
+
+class Particle():
+	'''
+	Particle
+	'''
+	def __init__(self, x, p):
+		'''
+		Constructor
+		'''
+		self.x = x # particle coordinate
+		self.p = p # particle momentum
+
+	def motion(self, field, time_data):
+		'''
+		Trajectory of particle and changing its position
+		'''
+		xp0 = np.hstack((self.x, self.p))
+		xp_data = odeint(calc_der, xp0, time_data, args=(field,))
+
+		x_data = xp_data[:,0:3]
+		p_data = xp_data[:,3:6]
+
+		self.x = x_data[-1]
+		self.p = p_data[-1]
+
+		return x_data, p_data
 
 
 def calc_der(xp, t, field):
